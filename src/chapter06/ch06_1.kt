@@ -1,5 +1,9 @@
 package chapter06
 
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+
 fun strLenSafe(s: String?): Int =
     // if (s != null) s.length else 0
         s?.length ?: 0
@@ -46,6 +50,44 @@ fun Person.countryName(): String {
     return if (country != null) country else "Unknown"
 }
 
+fun ignoreNulls(s: String?) {
+    val sNotNull: String = s!!
+    println(sNotNull.length)
+}
+
+fun sendEmailTo(email: String) {
+    println("Sending email to $email")
+}
+
+class MyService {
+    fun performAction(): String = "foo"
+}
+
+class MyTest {
+    // private var myService: MyService? = null
+    private lateinit var myService: MyService
+    @Before fun setUp() {
+        myService = MyService()
+    }
+    @Test fun testAction() {
+        Assert.assertEquals("foo",
+                myService!!.performAction())
+    }
+}
+
+fun verifyUserInput(input: String?) {
+    if (input.isNullOrBlank()) {
+        println("Please fill in the required fields")
+    }
+}
+
+fun <T> printHash(t: T) {
+    println(t?.hashCode()?:"null has no hashcode")
+}
+
+fun yellAtSafe(person: Person) {
+    println((person.name?:"anyone").toUpperCase())
+}
 fun main(args: Array<String>) {
     val x: String? = null
     println(strLenSafe(x))
@@ -75,6 +117,16 @@ fun main(args: Array<String>) {
     println(p1 == p2)
     println(p1.equals(42))
 
+    // ignoreNulls(null)
 
+    var email: String? = "jump@myheart.com"
+    email?.let { sendEmailTo(it) }
+    email = null
+    email?.let { sendEmailTo(it) }
+
+    verifyUserInput(" ")
+    verifyUserInput(null)
+
+    printHash(null)
 
 }
